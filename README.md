@@ -46,36 +46,3 @@ Pydantic — request/response validation
 JWT Authentication — ownership checks
 
 Redis (optional) — idempotency cache
-
-
-## Project structure
-
-
-fintech-ledger/
-│
-├── app/
-│   ├── api/
-│   │   ├── accounts.py
-│   │   ├── transfers.py
-│   │   └── transactions.py
-│   │
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── security.py
-│   │   └── logging.py
-│   │
-│   ├── db/
-│   │   ├── session.py
-│   │   ├── models.py
-│   │   └── migrations/
-│   │
-│   ├── schemas/
-│   │   ├── accounts.py
-│   │   ├── transfers.py
-│   │   └── transactions.py
-│   │
-│   └── services/
-│       ├── idempotency.py
-│       └── ledger.py
-│
-└── README.md
