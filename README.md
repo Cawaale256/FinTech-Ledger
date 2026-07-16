@@ -49,6 +49,8 @@ Redis (optional) — idempotency cache
 
 
 ## Project structure
+
+
 fintech-ledger/
 │
 ├── app/
