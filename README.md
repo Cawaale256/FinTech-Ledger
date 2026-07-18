@@ -17,8 +17,6 @@ Secure logging
 
 Zero‑downtime migration patterns
 
-It directly aligns with your 30‑Day Backend Study Plan and prepares you for micro1 backend interviews.
-
 ## Overview
 The FinTech Ledger is a simplified wallet + transfer system.
 Users can:
