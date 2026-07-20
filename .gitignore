@@ -1,0 +1,37 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.envrc
+.venv/
+env/
+ENV/
+
+# Environment variables
+.env
+
+# Alembic cache
+alembic/*.pyc
+alembic/versions/*.pyc
+
+# SQLite (if ever used)
+*.db
+*.sqlite3
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Python build
+build/
+dist/
+*.egg-info/
+
+# Cache
+.cache/
