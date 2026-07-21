@@ -1,9 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/accounts",
-    tags=["Accounts"],
-)
+router = APIRouter(tags=["Accounts"])
 
 @router.get("/")
 def list_accounts():

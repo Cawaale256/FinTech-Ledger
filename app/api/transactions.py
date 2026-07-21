@@ -1,9 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/transactions",
-    tags=["Transactions"],
-)
+router = APIRouter(tags=["Transactions"])
 
 @router.get("/")
 def list_transactions():

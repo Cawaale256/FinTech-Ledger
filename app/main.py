@@ -10,7 +10,7 @@ from app.api.transfers import router as transfers_router
 #from app.core.config import settings
 
 
-def create_application()-> FastAPI:
+def create_application() -> FastAPI:
     app = FastAPI(
         title="FinTech Ledger API",
         version="1.0.0",

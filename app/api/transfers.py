@@ -1,9 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/transfers",
-    tags=["Transfers"],
-)
+router = APIRouter( tags=["Transfers"])
 
 @router.get("/")
 def list_transfers():
