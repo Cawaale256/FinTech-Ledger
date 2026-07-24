@@ -1,26 +1,30 @@
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DateTime, func
+import uuid
+from sqlalchemy import Column, String, Numeric, DateTime, UniqueConstraint
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from app.db.session import Base
+
 
 class Account(Base):
     __tablename__ = "accounts"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    user_id = Column(UUID(as_uuid=True), nullable=False)
+
     currency = Column(String, nullable=False, default="USD")
-    balance = Column(Numeric(12, 2), nullable=False, default=0)
+
+    balance = Column(Numeric(18, 2), nullable=False, default=0)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # Relationship mapping 
-    user = relationship("User", back_populates="accounts")
-
-    transactions = relationship(
-        "Transaction",
-        back_populates="account",
-        cascade="all, delete-orphan"
+    __table_args__ = (
+        UniqueConstraint("user_id", "currency", name="uq_user_currency"),
     )
 
+    # Transfer relationships (correct)
     sent_transfers = relationship(
         "Transfer",
         foreign_keys="Transfer.source_account_id",
