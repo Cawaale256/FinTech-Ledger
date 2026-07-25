@@ -28,6 +28,11 @@ if config.config_file_name is not None:
 from app.db.base import Base
 target_metadata = Base.metadata
 
+# import models
+from app.models import accounts
+from app.models import idempotency
+from app.models import transfers
+
 
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")
