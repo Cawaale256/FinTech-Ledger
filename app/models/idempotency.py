@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 
-from app.db.session import Base
+from app.db.base import Base
 
 
 class IdempotencyRecord(Base):
