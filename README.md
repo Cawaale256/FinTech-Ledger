@@ -20,27 +20,23 @@ Zero‑downtime migration patterns
 ## Overview
 The FinTech Ledger is a simplified wallet + transfer system.
 Users can:
-
-Create a wallet
-
-Transfer money between wallets
-
-View transaction history
+- Create a wallet
+- Transfer money between wallets
+- View transaction history
 
 The system guarantees transactional integrity, idempotent writes, and secure access control.
 
 ## Architecture
-Tech Stack
-FastAPI — API framework
 
-PostgreSQL — relational database
+![alt text](FinTech-Ledger-File-structure.png)
 
-SQLAlchemy — ORM
+![alt text](image.png)
 
-Alembic — migrations
-
-Pydantic — request/response validation
-
-JWT Authentication — ownership checks
-
-Redis (optional) — idempotency cache
+Tech Stack:
+- FastAPI — API framework
+- PostgreSQL — relational database
+- SQLAlchemy — ORM
+- Alembic — migrations
+- Pydantic — request/response validation
+- JWT Authentication — ownership checks
+- Redis (optional) — idempotency cache
