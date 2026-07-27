@@ -28,9 +28,8 @@ The system guarantees transactional integrity, idempotent writes, and secure acc
 
 ## Architecture
 
-![alt text](FinTech-Ledger-File-structure.png)
+<img width="1236" height="751" alt="Architecture-diagram" src="https://github.com/user-attachments/assets/c2006c07-a8f2-4ecd-845c-613921b340c0" />
 
-![alt text](image.png)
 
 Tech Stack:
 - FastAPI — API framework
