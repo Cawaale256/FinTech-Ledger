@@ -26,12 +26,13 @@ class TransferCreate(BaseModel):
 
     
 class TransferResponse(BaseModel):
-   id : UUID
-   source_account_id : UUID
-   destination_account_id : UUID
-   amount : Decimal
-   status : str
-   created_at:datetime
+    id : UUID
+    source_account_id : UUID
+    destination_account_id : UUID
+    amount : Decimal
+    status : str
+    created_at:datetime
 
-   class Config:
-           orm_mode = True
+    model_config = {
+           "from_attributes": True
+       }
