@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator ,model_validator
 from uuid import UUID
 from decimal import Decimal
 from datetime import datetime
@@ -17,12 +17,18 @@ class TransferCreate(BaseModel):
         return v
 
     # Prevent transfers between the same account
-    @field_validator("destination_account_id")
-    def validate_accounts(cls, dest, values):
-        src = values.get("source_account_id")
-        if src and dest == src:
+    @model_validator(mode="after")
+    def validate_accounts(self):
+        if self.source_account_id == self.destination_account_id:
             raise ValueError("source_account_id and destination_account_id must differ")
-        return dest
+        return self
+    # # Prevent transfers between the same account
+    # @field_validator("destination_account_id")
+    # def validate_accounts(cls, dest, value):
+    #     src = values.get("source_account_id")
+    #     if src and dest == src:
+    #         raise ValueError("source_account_id and destination_account_id must differ")
+    #     return dest
 
     
 class TransferResponse(BaseModel):
