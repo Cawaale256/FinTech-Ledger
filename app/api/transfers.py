@@ -31,34 +31,57 @@ async def create_transfer( payload:TransferCreate, db: Session=Depends(get_db),
         )
         .first()
     )
-    # Fetch a source wallet
-    source = db.query(Account).filter(Account.id == payload.source_id).first()
-    if not source:
+    try:
+        # Fetch a source wallet
+        source = db.query(Account).filter(Account.id == payload.source_id).first()
+        # Authorization + user-scoped multitenancy
+        if not source:
             raise HTTPException(status_code= 404, detail=" Not found")
-    # Fetch a destination wallet
-    destination = db.query(Account).filter(Account.id == payload.destination_account_id).first()
-    if not destination:
-        raise HTTPException(status_code= 404, detail=" Not found")
-
-    if source.currency != destination.currency:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Currencies do not match") 
-
-    if source.balance <=  payload.amount:
-        raise HTTPException(status_code=400, detail="Insufficient fund")
-    source.balance -=payload.amount
-    destination.balance +=payload.amount
+        # Fetch a destination wallet
+        destination = db.query(Account).filter(Account.id == payload.destination_account_id).first()
+        if not destination:
+            raise HTTPException(status_code= 404, detail=" Not found")
+        # Currency check
+        if source.currency != destination.currency:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Currencies do not match") 
+        # Balance check
+        if source.balance <=  payload.amount:
+            raise HTTPException(status_code=400, detail="Insufficient fund")
+        # # Apply transfer
+        source.balance -=payload.amount
+        destination.balance +=payload.amount
     
 
-    transfer = Transfer(
+        transfer = Transfer(
      
-        source_account_id=payload.source_account_id,
-        destination_account_id=payload.destination_account_id,
-        amount=payload.amount,
-        status="success",
+            source_account_id=payload.source_account_id,
+            destination_account_id=payload.destination_account_id,
+            amount=payload.amount,
+            status="success",
+            user_id=current_user_id # user-scpoed tenancy
         
-    )
+        )
 
-    db.add(transfer)
-    db.commit()
-    db.refresh()
-    return transfer
+        db.add_all([source, destination, transfer])
+        db.commit()
+        db.refresh(transfer)
+
+        # Save idempotency record
+        response_body = TransferResponse.model_validate(transfer).model_dump()
+
+        record = IdempotencyRecord(
+                    idempotency_key=idempotency_key,
+                    user_id=current_user.id,
+                    request_hash=request_hash,
+                    response_body=response_body,
+                    status_code="200"
+                )
+
+        db.add(record)
+        db.commit()
+        
+        return response_body
+    
+    except Exception as e:
+        db.rollback()
+        raise e

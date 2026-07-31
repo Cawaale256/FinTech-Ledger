@@ -1,19 +1,16 @@
 from fastapi import APIRouter, Depends,status,HTTPException
 from app.models.accounts import Account
+from app.models.transfers import Transfer
 from app.schemas.accounts import AccountCreate, AccountResponse
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 
 router = APIRouter(tags=["Accounts"])
 
-@router.get("/", response_model=AccountResponse)
-def list_accounts(Account: AccountResponse, db: Session = Depends(get_db)):
-    return db.query(Account).all()
 
-
-@router.post("/", response=AccountResponse , status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=AccountResponse , status_code=status.HTTP_201_CREATED)
 async def create_account(payload:AccountCreate, db: Session = Depends(get_db)):
-     # Ownership check (Day 7 requirement)
+    # Ownership check (Day 7 requirement)
     # In real auth: current_user.id must match payload.user_id
     # For now, assume user_id is trusted or mock auth
     # Example:
@@ -30,7 +27,7 @@ async def create_account(payload:AccountCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            details= "User has already Wallet in this currency"
+            detail= "User has already Wallet in this currency"
         )
     # Create wallet with safe defaults
     account = Account(

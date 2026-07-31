@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Numeric, DateTime, UniqueConstraint
+from sqlalchemy import Column, String, Numeric, DateTime, UniqueConstraint, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -11,7 +11,7 @@ class Account(Base):
     __tablename__ = "accounts"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     currency = Column(String, nullable=False, default="USD")
     balance = Column(Numeric(18, 2), nullable=False, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

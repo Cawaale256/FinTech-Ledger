@@ -18,3 +18,9 @@
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
+
+# IMPORTANT: Alembic only sees models imported here
+from app.models.users import User
+from app.models.accounts import Account
+from app.models.transfers import Transfer
+from app.models.idempotency import IdempotencyRecord

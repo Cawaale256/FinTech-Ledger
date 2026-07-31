@@ -24,6 +24,6 @@ SessionLocal = sessionmaker(
 def get_db():
     db = SessionLocal()
     try:
-        yield
+        yield db
     finally:
         db.close()    

@@ -32,6 +32,7 @@ target_metadata = Base.metadata
 from app.models import accounts
 from app.models import idempotency
 from app.models import transfers
+from app.models import users
 
 
 def run_migrations_offline() -> None:
