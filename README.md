@@ -28,7 +28,7 @@ The system guarantees transactional integrity, idempotent writes, and secure acc
 
 ## Architecture
 
-<img width="1236" height="751" alt="Architecture-diagram" src="https://github.com/user-attachments/assets/c2006c07-a8f2-4ecd-845c-613921b340c0" />
+<img width="1215" height="743" alt="image" src="https://github.com/user-attachments/assets/70adf7b5-1440-4f1b-89a4-426c4f5e5b6d" />
 
 
 Tech Stack:
