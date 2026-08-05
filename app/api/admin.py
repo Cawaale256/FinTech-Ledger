@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.auth import get_current_user
+from app.core.security import get_current_user
 from app.models.users import User
 from app.models.accounts import Account
 from app.models.transfers import Transfer
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(prefix="", tags=["admin"])
 
 
 # Admin-only guard
-def require_admin(current_user: User):
+def require_admin(current_user: User):       
     if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
