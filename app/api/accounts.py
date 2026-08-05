@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.accounts import Account
 from app.schemas.accounts import AccountCreate, AccountResponse
-from app.auth import get_current_user
+
+from app.core.security import get_current_user
+
+
 from app.models.users import User
 
 router = APIRouter(tags=["Accounts"])
