@@ -6,8 +6,9 @@ from app.api.accounts import router as accounts_router
 from app.api.transactions import router as transactions_router
 from app.api.transfers import router as transfers_router
 from app.api.auth import router as auth_router
+
 # Setting
-#from app.core.config import settings
+from app.core.config import settings
 
 
 def create_application() -> FastAPI:
