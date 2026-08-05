@@ -29,10 +29,11 @@ from app.db.base import Base
 target_metadata = Base.metadata
 
 # import models
-from app.models import accounts
-from app.models import idempotency
-from app.models import transfers
-from app.models import users
+from app.models.accounts import Account
+from app.models.transfers import Transfer
+from app.models.idempotency import IdempotencyRecord
+from app.models.users import User
+
 
 
 def run_migrations_offline() -> None:

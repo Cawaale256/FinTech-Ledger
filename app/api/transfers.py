@@ -40,7 +40,7 @@ async def create_transfer(
             IdempotencyRecord.user_id == current_user.id   # user-scoped multitenancy
         )
         .first()
-
+    )
     # If record exists → replay response
     if existing_record:
         if existing_record.request_hash != request_hash:
@@ -51,7 +51,7 @@ async def create_transfer(
         return existing_record.response_body
 
     # Fetch accounts
-    source = db.query(Account).filter(Account.id== pyload.source_account_id).first()
+    source = db.query(Account).filter(Account.id== payload.source_account_id).first()
     destination = db.query(Account).filter(Account.id == payload.destination_account_id).first()
 
     if not source or not destination:
@@ -92,7 +92,7 @@ async def create_transfer(
             destination_account_id=payload.destination_account_id,
             amount=payload.amount,
             status="success",
-            user_id=current_user_id # user-scpoed tenancy
+            user_id=current_user.id # user-scpoed tenancy
         
         )
 
