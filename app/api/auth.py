@@ -46,8 +46,10 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
-    # Authenticate user
-    user = authenticate_user(db, form_data.username, form_data.password)
+    # OAuth2 sends email inside "username"
+    email = form_data.username 
+    # # Authenticate user
+    user = authenticate_user(db, email, form_data.password)
 
     if not user:
         raise HTTPException(
@@ -59,3 +61,5 @@ def login(
     token = create_access_token(user)
 
     return {"access_token": token, "token_type": "bearer"}
+
+
