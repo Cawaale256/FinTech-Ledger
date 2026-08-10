@@ -4,10 +4,9 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.accounts import Account
 from app.schemas.accounts import AccountCreate, AccountResponse
+from app.schemas.errors import ErrorResponse
 
 from app.core.security import get_current_user
-
-
 from app.models.users import User
 
 router = APIRouter(tags=["Accounts"])
@@ -35,8 +34,11 @@ async def create_account(
     if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail= "User has already Wallet in this currency"
-        )
+            detail=ErrorResponse(
+                detail= "User has already Wallet in this currency",
+                code="WALLET_EXISTS",
+                hint="A user may only have one wallet per currency"
+        ).model_dump()
     # Create wallet with safe defaults
     account = Account(
         user_id = current_user.id,
@@ -48,4 +50,3 @@ async def create_account(
     db.refresh(account)
 
     return account
-
