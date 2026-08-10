@@ -7,6 +7,7 @@ from app.models.users import User
 from app.models.accounts import Account
 from app.models.transfers import Transfer
 from app.schemas.transactions import TransactionListResponse
+from app.schemas.errors import ErrorResponse # shared ErrorResponse
 
 router = APIRouter(tags=["Transactions"])
 
@@ -25,19 +26,26 @@ async def list_transactions_for_account(
     """
 
     # Ownership check
-
     account = db.query(Account).filter(Account.id == account_id).first()
 
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Account not found"
+            detail=ErrorResponse(
+                detail="Account not found",
+                code="ACCOUNT_NOT_FOUND",
+                hint="Verify the account_id belongs to an existing wallet"
+            ).model_dump()
         )
 
     if account.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Forbidden: cannot view transactions for another user's wallet"
+            detail=ErrorResponse(
+                detail="Forbidden: cannot view transactions for another user's wallet",
+                code="FORBIDDEN_ACCESS",
+                hint="Users may only view their own wallet history"
+            ).model_dump()
         )
 
     # Fetch transfers (source OR destination)
@@ -47,15 +55,12 @@ async def list_transactions_for_account(
             (Transfer.source_account_id == account_id) |
             (Transfer.destination_account_id == account_id)
         )
-        .order_by(Transfer.created_at.desc())  # newest first
+        .order_by(Transfer.created_at.desc())
     )
 
     total = transfers_query.count()
-
     transfers = transfers_query.limit(limit).offset(offset).all()
 
-    
-    # 3. Build response
     return TransactionListResponse(
         account_id=account_id,
         total=total,
