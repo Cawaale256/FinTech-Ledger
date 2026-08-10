@@ -9,6 +9,7 @@ from app.core.security import (
     hash_password
 )
 from app.models.users import User
+from app.schemas.errors import ErrorResponse 
 
 router = APIRouter(prefix="", tags=["auth"])
 
@@ -24,7 +25,11 @@ def register(
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            detail=ErrorResponse(
+                detail="Email already registered",
+                code="EMAIL_EXISTS",
+                hint="Use a different email address"
+            ).model_dump()
         )
 
     # Create new user
@@ -54,7 +59,11 @@ def login(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail=ErrorResponse(
+                detail="Incorrect email or password",
+                code="INVALID_CREDENTIALS",
+                hint="Check your login details and try again"
+            ).model_dump()
         )
 
     # Issue JWT token
