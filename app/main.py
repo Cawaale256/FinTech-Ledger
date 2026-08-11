@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -12,6 +12,8 @@ from app.api.auth import router as auth_router
 # Setting
 from app.core.config import settings
 from app.schemas.errors import ErrorResponse
+from app.core.rate_limit import request_log, MAX_REQUESTS, WINDOW_SECONDS
+import time
 
 def create_application() -> FastAPI:
     app = FastAPI(
@@ -19,6 +21,38 @@ def create_application() -> FastAPI:
         version="1.0.0",
         description="A minimal financial ledger with idempotency, transactions, and secure access control."
     )
+
+
+    # rate‑limit middleware
+    @app.middleware("http")
+    async def rate_limit_middleware(request: Request, call_next):
+        # Identify client (user_id if authenticated, else IP)
+        client_id = request.client.host
+
+        now = time.time()
+        window_start = now - WINDOW_SECONDS
+
+        # Clean old timestamps
+        request_log[client_id] = [
+            ts for ts in request_log[client_id] if ts > window_start
+    ]
+
+        # Check limit
+        if len(request_log[client_id]) >= MAX_REQUESTS:
+            raise HTTPException(
+                status_code=429,
+                detail=ErrorResponse(
+                    detail="Too many requests",
+                    code="RATE_LIMIT_EXCEEDED",
+                    hint=f"Limit is {MAX_REQUESTS} requests per {WINDOW_SECONDS} seconds"
+                ).model_dump()
+        )
+
+        # Record request
+        request_log[client_id].append(now)
+
+        return await call_next(request)
+    
 
     # Global Error Handling Middleware    
     @app.middleware("http")
